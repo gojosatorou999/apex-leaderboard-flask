@@ -1,8 +1,8 @@
 # Apex Leaderboard System
 
-A high-performance Flask-based leaderboard system for storing and ranking player scores with a premium, glassmorphic UI.
+A high-performance Flask based leaderboard system for storing and ranking player scores with a premium, glassmorphic UI.
 
-## 🚀 Features
+### 🚀 Features
 
 - **Store & Rank Scores**: Persistent SQLite database to track player performance.
 - **Real-time Updates**: Fetches and displays the top 10 players dynamically.
