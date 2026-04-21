@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Leaderboard | Elite Ranking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>APEX LEADERBOARD</h1>
+            <p>Compete with the best. Rise to the top.</p>
+        </header>
+
+        <div class="leaderboard-card">
+            <div class="submission-form">
+                <input type="text" id="username" placeholder="Username" maxlength="20">
+                <input type="number" id="score" placeholder="Score">
+                <button onclick="submitScore()">Submit</button>
+            </div>
+
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th class="rank">Rank</th>
+                        <th>Player</th>
+                        <th style="text-align: right;">Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Data loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLeaderboard() {
+            const response = await fetch('/api/scores');
+            const data = await response.json();
+            const body = document.getElementById('leaderboardBody');
+            body.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="rank rank-${item.rank}">#${item.rank}</td>
+                    <td class="username">${item.username}</td>
+                    <td class="score">${item.score.toLocaleString()}</td>
+                `;
+                body.appendChild(row);
+            });
+        }
+
+        async function submitScore() {
+            const username = document.getElementById('username').value;
+            const score = document.getElementById('score').value;
+
+            if (!username || !score) {
+                alert('Please fill in both fields');
+                return;
+            }
+
+            const response = await fetch('/api/scores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, score: parseInt(score) })
+            });
+
+            if (response.ok) {
+                document.getElementById('username').value = '';
+                document.getElementById('score').value = '';
+                fetchLeaderboard();
+            } else {
+                alert('Submission failed');
+            }
+        }
+
+        // Initial load
+        fetchLeaderboard();
+    </script>
+</body>
+</html>
